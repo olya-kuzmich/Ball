@@ -1,7 +1,7 @@
 let ball = document.querySelector(".ball");
 let divResult = document.querySelector(".result");
-let button = document.querySelector("button");
 let divArr = document.querySelector(".title_with_button");
+
 let now = new Date();
 
 let specialArr = [];
@@ -16,14 +16,15 @@ ball.addEventListener("click", function () {
   ball.style.top = `${top}px`;
   ball.style.left = `${left}px`;
   let timeClick = new Date();
-  timeResult = Math.round((timeClick - now) / 1000);
+  timeResult = (timeClick - now) / 1000;
+  timeResult = timeResult.toFixed(2);
   now = timeClick;
 
   specialArr.push(timeResult);
 
-  let sumArr = specialArr.reduce((a, b) => a + b, 0);
-  let resultArr = Math.ceil(sumArr / specialArr.length);
-  console.log(resultArr);
+  let sumArr = specialArr.reduce((a, b) => +a + +b, 0);
+  console.log(sumArr);
+  let resultArr = (sumArr / specialArr.length).toFixed(2);
 
   draw(resultArr);
 });
@@ -31,16 +32,28 @@ ball.addEventListener("click", function () {
 function draw(resultArr) {
   let stringResult = document.createElement("p");
   stringResult.className = "result__p";
+
+  if (timeResult == Math.min(...specialArr)) {
+    stringResult.classList.add("record");
+  }
+
+  divArr.innerHTML = `
+<p class="title">Твоя скорость кликов 💪</p>
+<button class="button">начать заново</button>
+`;
+
   stringResult.innerText = `⚾ ${timeResult} сек`;
   divResult.append(stringResult);
 
   stringArr.innerText = `Средний результат: ${resultArr} сек`;
   divArr.append(stringArr);
-}
 
-button.addEventListener("click", function () {
-  divResult.innerHTML = ``;
-  specialArr = [];
-  stringArr.innerText = "";
-  stringArr.remove();
-});
+  let button = divArr.querySelector(".button");
+  button.addEventListener("click", function () {
+    divResult.innerHTML = ``;
+    specialArr = [];
+    //   stringArr.innerText = "";
+    stringArr.remove();
+    divArr.innerHTML = "";
+  });
+}
